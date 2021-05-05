@@ -41,14 +41,14 @@ output_rates = np.zeros((len(num_conns), len(input_freqs)))
 net = network.DynapseNetworkGenerator()
 
 poisson_gens = dynapse.get_poisson_spikegens(input_freqs, schip, score, nids)
-dynapse.monitor_neurons([chip]*len(nids), [core]*len(nids), nids)
+dynapse.monitor_neurons(chip, core, nids)
 
 for i in range(len(num_conns)):
     # remove the existing network in netgen
     net.clear_network()
 
-    spikegens = net.get_spikegens([schip]*len(nids), [score]*len(nids), nids)
-    neurons = net.get_neurons([chip]*len(nids), [core]*len(nids), nids)
+    spikegens = net.get_spikegens(schip, score, nids)
+    neurons = net.get_neurons(chip, core, nids)
     net.add_connections_one_to_one(spikegens, neurons, network.SYNAPSE_AMPA, num_conns[i])
 
     # make a dynapse1config using the network

@@ -1,8 +1,9 @@
 from Dynapse1Constants import *
 import Dynapse1Utils as ut
 import NetworkGenerator
-from typing import List
+from typing import List, Union
 import random
+import utils
 
 import samna.dynapse1
 
@@ -21,11 +22,11 @@ class DynapseNetworkGenerator(NetworkGenerator.NetworkGenerator):
 	def get_spikegen(self, chip: int, core: int, id: int) -> NetworkGenerator.Neuron:
 		return NetworkGenerator.Neuron(chip, core, id, True)
 
-	def get_neurons(self, chips: List[int], cores: List[int], ids: List[int]) -> List[NetworkGenerator.Neuron]:
-		return [NetworkGenerator.Neuron(chip, core, id) for chip,core,id in zip(chips,cores,ids)]
+	def get_neurons(self, chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int]) -> List[NetworkGenerator.Neuron]:
+		return [NetworkGenerator.Neuron(chip, core, id) for chip,core,id in utils.zip_lists_or_ints(chips,cores,ids)]
 
-	def get_spikegens(self, chips: List[int], cores: List[int], ids: List[int]) -> List[NetworkGenerator.Neuron]:
-		return [NetworkGenerator.Neuron(chip, core, id, True) for chip,core,id in zip(chips,cores,ids)]
+	def get_spikegens(self, chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int]) -> List[NetworkGenerator.Neuron]:
+		return [NetworkGenerator.Neuron(chip, core, id, True) for chip,core,id in utils.zip_lists_or_ints(chips,cores,ids)]
 
 	def add_connection(self, pre: NetworkGenerator.Neuron, post: NetworkGenerator.Neuron, synapse_type, weight: int=1) -> None:
 		for _ in range(weight):

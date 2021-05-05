@@ -1,7 +1,7 @@
 import time
 import Dynapse1Utils as ut
+import utils
 from typing import List, Union
-
 
 class DynapseDevice():
 	def __init__(self, device_name="my_dynapse1", gui=False, sender_port=12345, receiver_port=12346) -> None:
@@ -12,8 +12,8 @@ class DynapseDevice():
 	def close(self):
 		ut.close_dynapse1(self.store, self.device_name)
 
-	def monitor_neurons(self, chips: list, cores: list, ids: list):
-		monitored_global_neuron_ids = [ut.get_global_id(chip, core, id) for chip,core,id in zip(chips,cores,ids)]
+	def monitor_neurons(self, chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int]):
+		monitored_global_neuron_ids = [ut.get_global_id(chip, core, id) for chip,core,id in utils.zip_lists_or_ints(chips,cores,ids)]
 		graph, filter_node, sink_node = ut.create_neuron_select_graph(self.model, monitored_global_neuron_ids)
 		self.graph = graph
 		self.filter_node = filter_node
@@ -64,13 +64,7 @@ class PoissonGenerator():
 
 class PoissonGeneratorGroup():
 	def __init__(self, model, rates: Union[int,List[int]], chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int]) -> None:
-		if type(rates) == int:
-			rates = [rates] * len(ids)
-		if type(chips) == int:
-			chips = [chips] * len(ids)
-		if type(cores) == int:
-			cores = [cores] * len(ids)
-		self.poisson_gens = [PoissonGenerator(model,rate,chip,core,id) for chip,core,id,rate in zip(chips,cores,ids,rates)]
+		self.poisson_gens = [PoissonGenerator(model,rate,chip,core,id) for chip,core,id,rate in utils.zip_lists_or_ints(chips,cores,ids,rates)]
 
 	def set_rates(self, rates: List[int]) -> None:
 		for poisson_gen, rate in zip(self.poisson_gens, rates):
