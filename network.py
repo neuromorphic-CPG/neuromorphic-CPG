@@ -44,5 +44,11 @@ class DynapseNetworkGenerator(NetworkGenerator.NetworkGenerator):
 					if random.random() <= probability:
 						super().add_connection(pre, post, synapse_type)
 
+	def add_connections_one_to_all(self, pre: NetworkGenerator.Neuron, posts: List[NetworkGenerator.Neuron], synapse_type, weight: int=1, probability: float=1.0) -> None:
+		for post in posts:
+			for _ in range(weight):
+				if random.random() <= probability:
+					super().add_connection(pre, post, synapse_type)
+
 	def get_config(self):
 		return super().make_dynapse1_configuration()
