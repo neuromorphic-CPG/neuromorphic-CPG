@@ -1,39 +1,20 @@
-import numpy as np
+import samna.dynapse1 as dyn1
+import NetworkGenerator as n
+from NetworkGenerator import Neuron
 
-import parameters 
-import device 
-import network
+net_gen = n.NetworkGenerator()
 
-# open DYNAP-SE1 board to get Dynapse1Model
-dynapse = device.DynapseDevice()
-model = dynapse.model
+neuron1 = Neuron(0, 0, 0)
+neuron2 = Neuron(0, 0, 1)
+neuron3 = Neuron(0, 0, 2)
 
-chip = 0
-core = 0
-duration = 2
+net_gen.add_connection(neuron1, neuron2, dyn1.Dynapse1SynType.AMPA)
+net_gen.add_connection(neuron1, neuron3, dyn1.Dynapse1SynType.AMPA)
+net_gen.add_connection(neuron1, neuron3, dyn1.Dynapse1SynType.AMPA)
 
-# set params
-parameters.set_all_default_params(model)
-parameters.set_param(model, parameters.GABA_B_WEIGHT, (4,80), chip, core)
+net_gen.print_network()
 
-# init a network generator
-net = network.DynapseNetworkGenerator()
-
-neurons = net.get_neurons(chip, core, np.arange(3))
-
-net.add_connection(neurons[0],neurons[1], network.SYNAPSE_AMPA, 1)
-net.add_connection(neurons[0],neurons[2], network.SYNAPSE_AMPA, 2)
-
- # make a dynapse1config using the network
-model.apply_configuration(net.get_config())
-
-# start monitor
-dynapse.start_graph()
-# run experiment
-events = dynapse.run_simulation(duration)
-# stop graph
-dynapse.stop_graph()
-
-
-# close Dynapse1
-dynapse.close()
+new_config = net_gen.make_dynapse1_configuration()
+# throws ERROR: 
+# aliasing pre neurons exist! Post neurons C0c0n1 and C0c0n2 have different 
+# pre neurons in different chips but with same (core_id, neuron_id, synapse_type) (0, 0, Dynapse1SynType.AMPA).
