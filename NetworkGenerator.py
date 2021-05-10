@@ -396,6 +396,9 @@ def convert_incoming_conns_dict2list(incoming_connections_dict):
     to
     [(preNeuron1,synapseType1), (preNeuron1,synapseType2), (preNeuron1,synapseType2), (preNeuron2,synapseType1),...]
     """
+    incoming_connections_list = []
+    incoming_connections_str_list = []
+    
     for pre_tag in incoming_connections_dict:
         core = pre_tag[0]
         neuron = pre_tag[1]
@@ -410,8 +413,6 @@ def convert_incoming_conns_dict2list(incoming_connections_dict):
             syn_str = "GABA_A"
 
         pre_neurons = incoming_connections_dict[pre_tag]
-        incoming_connections_list = []
-        incoming_connections_str_list = []
         for pre_neuron in pre_neurons:
             chip = pre_neuron[0]
             is_spike_gen = pre_neuron[1]
