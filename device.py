@@ -2,7 +2,7 @@ import time
 import Dynapse1Utils as ut
 import utils
 from typing import List, Union
-
+import pickle
 class DynapseDevice():
 	def __init__(self, device_name="my_dynapse1", gui=False, sender_port=12345, receiver_port=12346) -> None:
 		self.device_name = device_name
@@ -44,7 +44,8 @@ class DynapseDevice():
 		# sleep for duration
 		time.sleep(duration)
 		# get the events accumulated during the experiment
-		return self.sink_node.get_buf()
+		events = self.sink_node.get_buf()
+		return [Spike(ut.get_global_id(event.chip_id, event.core_id, event.neuron_id), event.timestamp) for event in events]
 
 class PoissonGenerator():
 	def __init__(self, model, rate: int, chip: int, core: int, id: int) -> None:
@@ -75,3 +76,11 @@ class PoissonGeneratorGroup():
 
 	def stop(self) -> None:
 		self.poisson_gens[0].stop()
+
+class Spike():
+	def __init__(self, id: int, timestamp: int) -> None:
+		self.id = id
+		self.timestamp = timestamp
+
+	def __str__(self) -> str:
+		return f'[{self.timestamp},{self.id}]'
