@@ -47,6 +47,10 @@ class DynapseDevice():
 		spike_times = np.linspace(0, duration, round(rate*duration))
 		return FPGAGenerator(self.model, chip, core, id, spike_times, repeat_mode)
 
+	def get_fpga_spikegens_rate(self, chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int], rates: List[float], duration: float, repeat_mode: bool=False):
+		spike_times = [np.linspace(0, duration, round(rate*duration)) for rate in rates]
+		return FPGAGeneratorGroup(self.model, chips, cores, ids, spike_times, repeat_mode)
+
 	def start_graph(self) -> None:
 		self.graph.start()
 
@@ -103,6 +107,16 @@ class FPGAGenerator():
 
 	def stop(self) -> None:
 		self.fpga_gen.stop()
+
+class FPGAGeneratorGroup():
+	def __init__(self, model, chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int], spike_times: List[np.ndarray], repeat_mode: bool) -> None:
+		self.fpga_gens = [FPGAGenerator(model,chip,core,id,spike_times[i],repeat_mode) for i, chip,core,id in utils.zip_lists_or_ints(chips,cores,ids)]
+
+	def start(self) -> None:
+		self.fpga_gens[0].start()
+
+	def stop(self) -> None:
+		self.fpga_gens[0].stop()
 
 class Spike():
 	def __init__(self, id: int, timestamp: int) -> None:
