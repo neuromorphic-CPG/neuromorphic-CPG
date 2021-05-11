@@ -2,7 +2,8 @@ import time
 import Dynapse1Utils as ut
 import utils
 from typing import List, Union
-import pickle
+import network
+import numpy as np
 class DynapseDevice():
 	def __init__(self, device_name="my_dynapse1", gui=False, sender_port=12345, receiver_port=12346) -> None:
 		self.device_name = device_name
@@ -12,8 +13,15 @@ class DynapseDevice():
 	def close(self):
 		ut.close_dynapse1(self.store, self.device_name)
 
-	def monitor_neurons(self, chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int]):
+	def monitor_neurons(self, chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int]) -> None:
 		monitored_global_neuron_ids = [ut.get_global_id(chip, core, id) for chip,core,id in utils.zip_lists_or_ints(chips,cores,ids)]
+		graph, filter_node, sink_node = ut.create_neuron_select_graph(self.model, monitored_global_neuron_ids)
+		self.graph = graph
+		self.filter_node = filter_node
+		self.sink_node = sink_node
+
+	def monitor_neuron_network(self, neurons: List[network.NetworkGenerator.Neuron]) -> None:
+		monitored_global_neuron_ids = [ut.get_global_id(neuron.chip_id, neuron.core_id, neuron.neuron_id) for neuron in neurons if not neuron.is_spike_gen]
 		graph, filter_node, sink_node = ut.create_neuron_select_graph(self.model, monitored_global_neuron_ids)
 		self.graph = graph
 		self.filter_node = filter_node
@@ -31,6 +39,13 @@ class DynapseDevice():
 
 	def get_poisson_spikegens(self, rates: Union[int,List[int]], chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int]):
 		return PoissonGeneratorGroup(self.model, rates, chips, cores, ids)
+
+	def get_fpga_spikegen(self, chip: int, core: int, id: int, spike_times: np.ndarray, repeat_mode: bool=False):
+		return FPGAGenerator(self.model, chip, core, id, spike_times, repeat_mode)
+
+	def get_fpga_spikegen_rate(self, chip: int, core: int, id: int, rate: float, duration: float, repeat_mode: bool=False):
+		spike_times = np.linspace(0, duration, round(rate*duration))
+		return FPGAGenerator(self.model, chip, core, id, spike_times, repeat_mode)
 
 	def start_graph(self) -> None:
 		self.graph.start()
@@ -52,7 +67,7 @@ class PoissonGenerator():
 		self.id = ut.get_global_id(chip, core, id)
 		self.poisson_gen = model.get_poisson_gen()
 		self.poisson_gen.set_chip_id(chip)
-		self.poisson_gen.write_poisson_rate_hz(self.id, int(rate))
+		self.poisson_gen.write_poisson_rate_hz(self.id % ut.NEURONS_PER_CHIP, int(rate))
 
 	def set_rate(self, rate: int) -> None:
 		self.poisson_gen.write_poisson_rate_hz(self.id, rate)
@@ -76,6 +91,18 @@ class PoissonGeneratorGroup():
 
 	def stop(self) -> None:
 		self.poisson_gens[0].stop()
+
+class FPGAGenerator():
+	def __init__(self, model, chip: int, core: int, id: int, spike_times: np.ndarray, repeat_mode: bool) -> None:
+		self.id = ut.get_global_id(chip, core, id)
+		self.fpga_gen = model.get_fpga_spike_gen()
+		ut.set_fpga_spike_gen(self.fpga_gen, spike_times, [self.id % ut.NEURONS_PER_CHIP]*len(spike_times), [chip]*len(spike_times), 900, repeat_mode)
+
+	def start(self) -> None:
+		self.fpga_gen.start()
+
+	def stop(self) -> None:
+		self.fpga_gen.stop()
 
 class Spike():
 	def __init__(self, id: int, timestamp: int) -> None:
