@@ -18,11 +18,13 @@ all_nids = np.arange(1,16)
 
 # set params
 parameters.set_all_default_params(model)
-parameters.set_param(model, parameters.GABA_B_WEIGHT, (4,80), chip, core)
-parameters.set_param(model, parameters.NEURON_DC_INPUT, (3,80), chip, core)
+parameters.set_param(model, parameters.GABA_B_WEIGHT, (4,255), chip, core)
+# parameters.set_param(model, parameters.NEURON_DC_INPUT, (2,40), chip, core)
+parameters.set_param(model, parameters.NEURON_DC_INPUT, (2,20), chip, core)
 parameters.set_param(model, parameters.ADAPTATION_GAIN, (7,80), chip, core)
-parameters.set_param(model, parameters.ADAPTATION_TIME_CONSTANT, (7,80), chip, core)
+parameters.set_param(model, parameters.ADAPTATION_TIME_CONSTANT, (1,80), chip, core)
 parameters.set_param(model, parameters.ADAPTATION_WEIGHT, (7,80), chip, core)
+# parameters.set_param(model, parameters.ADAPTATION_SOMETHING (3,80), chip, core)
 
 # init a network generator
 net = network.DynapseNetworkGenerator()
@@ -32,8 +34,25 @@ net.clear_network()
 
 # only use 1 spikegen No.15, [0,1024)
 spikegen_id = 15
+# 400 spikes in 2 second
+spike_times = np.linspace(0, 2, 400)
+# spikegen id list corresponding to spike_times
+indices = [spikegen_id]*len(spike_times)
 
-spikegen = net.get_spikegen(chip, core, spikegen_id)
+# the chip where the post neurons are
+post_chip = 0
+target_chips = [post_chip]*len(indices)
+isi_base = 900
+repeat_mode=False
+
+spikegen = net.get_spikegen(0, 0, spikegen_id)
+# get the fpga spike gen from Dynapse1Model
+fpga_gen = dynapse.get_fpga_spikegen(0, 0, spikegen_id, spike_times, repeat_mode)
+# # get the fpga spike gen from Dynapse1Model
+# fpga_spike_gen = dynapse.get_fpga_spikegen_rate(spikegen, spike_times, indices, target_chips, isi_base, repeat_mode)
+# # set up the fpga_spike_gen
+# set_fpga_spikegen(fpga_spike_gen, spike_times, indices, target_chips, isi_base, repeat_mode)
+
 neurons = net.get_neurons(chip, core, nids)
 
 # add connections
@@ -45,20 +64,17 @@ model.apply_configuration(net.get_config())
 # check connections of network 
 net.print_network()
 
-# get the fpga spike gen from Dynapse1Model
-fpga_spike_gen = dynapse.get_fpga_spikegen_rate(chip, core, spikegen_id, 200, duration) # 400 spikes in 2 second
-
 # monitor neurons
 dynapse.monitor_neuron_network(neurons + [spikegen])
 
 # start monitor
 dynapse.start_graph()
 # start the stimulus
-fpga_spike_gen.start()
+fpga_gen.start()
 # run experiment
 events = dynapse.run_simulation(duration)
 # stop the stimulus
-fpga_spike_gen.stop()
+fpga_gen.stop()
 # stop graph
 dynapse.stop_graph()
 # close Dynapse1
