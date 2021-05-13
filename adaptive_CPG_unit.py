@@ -25,7 +25,7 @@ nids2 = np.arange(2*num_neurons+1, 3*num_neurons+1)
 all_nids = np.concatenate((nids1, nids2), axis = 0)
 
 # nids = np.arange(1, num_neurons+1)
-duration = 10
+duration = 15
 
 # set params
 parameters.set_all_default_params(model)
