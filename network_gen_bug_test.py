@@ -4,9 +4,9 @@ from NetworkGenerator import Neuron
 
 net_gen = n.NetworkGenerator()
 
-neuron1 = Neuron(0, 0, 0)
-neuron2 = Neuron(0, 0, 1)
-neuron3 = Neuron(0, 0, 2)
+neuron1 = Neuron(0, 0, 1)
+neuron2 = Neuron(0, 0, 2)
+neuron3 = Neuron(0, 0, 3)
 
 net_gen.add_connection(neuron1, neuron2, dyn1.Dynapse1SynType.AMPA)
 net_gen.add_connection(neuron1, neuron3, dyn1.Dynapse1SynType.AMPA)
