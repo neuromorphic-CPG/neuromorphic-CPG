@@ -1,0 +1,3 @@
+[submodule "ctxctl_contrib"]
+	path = ctxctl_contrib
+	url = git@gitlab.com:neuroinf/ctxctl_contrib.git

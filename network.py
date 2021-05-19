@@ -1,5 +1,3 @@
-from Dynapse1Constants import *
-import Dynapse1Utils as ut
 import NetworkGenerator
 from typing import List, Union
 import random

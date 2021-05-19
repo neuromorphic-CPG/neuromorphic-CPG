@@ -2,6 +2,14 @@
 
 ## Software Setup
 
+### Installing ctxctl_contrib
+
+Run the following the install ctxctl_contrib locally with pip, so Python can find it easily.
+
+```
+python3 -m pip install --editable ctxctl_contrib/
+```
+
 ### Getting the GUI to run on Zemo
 
 Set the DISPLAY variable in Windows Terminal
