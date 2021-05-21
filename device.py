@@ -1,5 +1,6 @@
 import time
 import Dynapse1Utils as ut
+import Dynapse1Constants
 import utils
 from typing import List, Union
 import network
@@ -30,6 +31,12 @@ class DynapseDevice():
 	def monitor_neuron(self, chip: int, core: int, id: int) -> None:
 		monitored_global_neuron_id = ut.get_global_id(chip, core, id)
 		graph, filter_node, sink_node = ut.create_neuron_select_graph(self.model, [monitored_global_neuron_id])
+		self.graph = graph
+		self.filter_node = filter_node
+		self.sink_node = sink_node
+
+	def monitor_all_neurons(self) -> None:
+		graph, filter_node, sink_node = ut.create_neuron_select_graph(self.model, list(range(Dynapse1Constants.NUM_CHIPS*Dynapse1Constants.NEURONS_PER_CHIP)))
 		self.graph = graph
 		self.filter_node = filter_node
 		self.sink_node = sink_node
