@@ -69,7 +69,7 @@ for i in range(len(num_conns)):
     counter = np.zeros(num_neurons)
     for evt in events:
         # Count the number of spikes per neuron
-        counter[evt.neuron_id-1] += 1
+        counter[evt.id-1] += 1
 
     output_rates[i] = counter/duration
 
