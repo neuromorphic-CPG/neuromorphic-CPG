@@ -28,7 +28,7 @@ GABA_B_WEIGHT = "PS_WEIGHT_INH_S_N"
 ADAPTATION_TIME_CONSTANT = "IF_AHTAU_N"
 ADAPTATION_GAIN = "IF_AHTHR_N"
 ADAPTATION_WEIGHT = "IF_AHW_P"
-ADAPTATION_SOMETHING = "IF_CASC_N"
+ADAPTATION_CASCODE = "IF_CASC_N"
 
 SYNAPSE_PULSE_WIDTH = "PULSE_PWLK_P"
 
@@ -118,8 +118,8 @@ def get_default_params():
 	paramGroup.param_map[ADAPTATION_WEIGHT].coarse_value = 0
 	paramGroup.param_map[ADAPTATION_WEIGHT].fine_value = 0
 
-	paramGroup.param_map[ADAPTATION_SOMETHING].coarse_value = 0
-	paramGroup.param_map[ADAPTATION_SOMETHING].fine_value = 0
+	paramGroup.param_map[ADAPTATION_CASCODE].coarse_value = 0
+	paramGroup.param_map[ADAPTATION_CASCODE].fine_value = 0
 
 	paramGroup.param_map[SYNAPSE_PULSE_WIDTH].coarse_value = 4
 	paramGroup.param_map[SYNAPSE_PULSE_WIDTH].fine_value = 106

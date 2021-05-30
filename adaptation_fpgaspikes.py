@@ -23,7 +23,7 @@ parameters.set_param(model, parameters.NEURON_DC_INPUT, (0,0), chip, core)
 # parameters.set_param(model, parameters.ADAPTATION_GAIN, (7,80), chip, core)
 # parameters.set_param(model, parameters.ADAPTATION_TIME_CONSTANT, (1,80), chip, core)
 # parameters.set_param(model, parameters.ADAPTATION_WEIGHT, (7,80), chip, core)
-# parameters.set_param(model, parameters.ADAPTATION_SOMETHING, (3,80), chip, core)
+# parameters.set_param(model, parameters.ADAPTATION_CASCODE, (3,80), chip, core)
 parameters.set_param(model, parameters.AMPA_WEIGHT, (7,100), chip, core)
 # leakage of AMPA
 #  parameters.set_param(model, parameters.AMPA_TIME_CONSTANT, (2,80), chip, core)
