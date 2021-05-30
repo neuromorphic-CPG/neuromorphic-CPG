@@ -65,6 +65,7 @@ class DynapseDevice():
 		self.graph.stop()
 
 	def run_simulation(self, duration: float):
+		time.sleep(0.01) # for some reason, need this otherwise the buffer isn't cleared.
 		# clear the output buffer
 		self.sink_node.get_buf()
 		# sleep for duration
@@ -117,7 +118,7 @@ class FPGAGenerator():
 
 class FPGAGeneratorGroup():
 	def __init__(self, model, chips: Union[int,List[int]], cores: Union[int,List[int]], ids: List[int], spike_times: List[np.ndarray], repeat_mode: bool) -> None:
-		self.fpga_gens = [FPGAGenerator(model,chip,core,id,spike_times[i],repeat_mode) for i, chip,core,id in utils.zip_lists_or_ints(chips,cores,ids)]
+		self.fpga_gens = [FPGAGenerator(model,chip,core,id,spike_times[i],repeat_mode) for i,(chip,core,id) in enumerate(utils.zip_lists_or_ints(chips,cores,ids))]
 
 	def start(self) -> None:
 		self.fpga_gens[0].start()
