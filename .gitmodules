@@ -1,3 +1,6 @@
 [submodule "ctxctl_contrib"]
 	path = ctxctl_contrib
 	url = git@gitlab.com:neuroinf/ctxctl_contrib.git
+[submodule "dynapse_wrapper"]
+	path = dynapse_wrapper
+	url = https://gitlab.com/ddallo/dynapse_wrapper.git

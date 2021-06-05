@@ -2,12 +2,13 @@
 
 ## Software Setup
 
-### Installing ctxctl_contrib
+### Installing ctxctl_contrib and dynapse_wrapper
 
-Run the following the install ctxctl_contrib locally with pip, so Python can find it easily.
+Run the following to install ctxctl_contrib and dynapse_wrapper locally with pip, so Python can find them easily.
 
 ```
 python3 -m pip install --editable ctxctl_contrib/
+python3 -m pip install --editable dynapse_wrapper/
 ```
 
 ### Getting the GUI to run on Zemo
