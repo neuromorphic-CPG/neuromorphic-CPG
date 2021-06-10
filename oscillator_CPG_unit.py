@@ -17,12 +17,12 @@ duration = 2
 
 # set params
 parameters.set_all_default_params(model)
-parameters.set_param(model, parameters.NEURON_TIME_CONSTANT_1, (4,80), chip, core_e)
-parameters.set_param(model, parameters.NEURON_TIME_CONSTANT_1, (4,5), chip, core_i)
+parameters.set_param(model, parameters.NEURON_LEAKAGE_1, (4,80), chip, core_e)
+parameters.set_param(model, parameters.NEURON_LEAKAGE_1, (4,5), chip, core_i)
 parameters.set_param(model, parameters.AMPA_WEIGHT, (6,25), chip, core_e)
 parameters.set_param(model, parameters.AMPA_WEIGHT, (6,10), chip, core_i)
 parameters.set_param(model, parameters.GABA_B_WEIGHT, (4,50), chip, core_e)
-parameters.set_param(model, parameters.GABA_B_TIME_CONSTANT, (4,20), chip, core_e)
+parameters.set_param(model, parameters.GABA_B_LEAKAGE, (4,20), chip, core_e)
 parameters.set_param(model, parameters.GABA_B_WEIGHT, (4,50), chip, core_i)
 
 # init a network generator
@@ -69,7 +69,7 @@ if len(events) > 0:
 
 # parameters.set_param(model, parameters.GABA_B_WEIGHT, (4,100), chip, core_e)
 # parameters.set_param(model, parameters.AMPA_WEIGHT, (6,5), chip, core_i)
-# parameters.set_param(model, parameters.NEURON_TIME_CONSTANT_1, (4,20), chip, core_i)
+# parameters.set_param(model, parameters.NEURON_LEAKAGE_1, (4,20), chip, core_i)
 # parameters.set_param(model, parameters.GABA_B_WEIGHT, (4,20), chip, core_i)
 parameters.set_param(model, parameters.GABA_B_WEIGHT, (4,100), chip, core_e)
 

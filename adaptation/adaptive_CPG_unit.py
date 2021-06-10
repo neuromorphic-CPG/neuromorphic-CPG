@@ -33,7 +33,7 @@ parameters.set_param(model, parameters.GABA_B_WEIGHT, (4,255), chip, core)
 # parameters.set_param(model, parameters.NEURON_DC_INPUT, (2,40), chip, core)
 parameters.set_param(model, parameters.NEURON_DC_INPUT, (2,20), chip, core)
 parameters.set_param(model, parameters.ADAPTATION_GAIN, (7,80), chip, core)
-parameters.set_param(model, parameters.ADAPTATION_TIME_CONSTANT, (1,80), chip, core)
+parameters.set_param(model, parameters.ADAPTATION_LEAKAGE, (1,80), chip, core)
 parameters.set_param(model, parameters.ADAPTATION_WEIGHT, (7,80), chip, core)
 # parameters.set_param(model, parameters.ADAPTATION_CASCODE (3,80), chip, core)
 
