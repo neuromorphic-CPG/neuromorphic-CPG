@@ -4,18 +4,23 @@ import plotting
 import numpy as np
 from typing import List
 
+def mean_group_spike_times(spikes: List[device.Spike], ids: List[int]):
+	spikes_array = plotting.extract_spikes_group(plotting.convert_spikes_to_array(spikes), ids)
+	spikes_array = spikes_array[np.argsort(spikes_array[:,0]),:]
+	start = np.argmin([np.std(spikes_array[i:i+len(ids),0]) for i in range(len(ids))])
+	return np.mean(np.reshape(spikes_array[start:start+((spikes_array.shape[0]-start)//len(ids))*len(ids),0], (-1,len(ids))), axis=1)
+
+def get_oscillator_frequency(spikes: List[device.Spike], ids: List[int]):
+	try:
+		spike_times = mean_group_spike_times(spikes, ids)
+		return 1000 / np.mean(np.diff(spike_times))
+	except:
+		return np.nan
+
 def get_coupled_oscillator_frequency_phase(spikes: List[device.Spike], ids1: List[int], ids2: List[int]):
 	try:
-		spikes_array = plotting.convert_spikes_to_array(spikes)
-		spikes_array_1 = plotting.extract_spikes_group(spikes_array, ids1)
-		spikes_array_1 = spikes_array_1[np.argsort(spikes_array_1[:,0]),:]
-		start_1 = np.argmin([np.std(spikes_array_1[i:i+len(ids1),0]) for i in range(len(ids1))])
-		spike_times_1 = np.mean(np.reshape(spikes_array_1[start_1:start_1+((spikes_array_1.shape[0]-start_1)//len(ids1))*len(ids1),0], (-1,len(ids1))), axis=1)
-		
-		spikes_array_2 = plotting.extract_spikes_group(spikes_array, ids2)
-		spikes_array_2 = spikes_array_2[np.argsort(spikes_array_2[:,0]),:]
-		start_2 = np.argmin([np.std(spikes_array_2[i:i+len(ids2),0]) for i in range(len(ids2))])
-		spike_times_2 = np.mean(np.reshape(spikes_array_2[start_2:start_2+((spikes_array_2.shape[0]-start_1)//len(ids2))*len(ids2),0], (-1,len(ids2))), axis=1)
+		spike_times_1 = mean_group_spike_times(spikes, ids1)
+		spike_times_2 = mean_group_spike_times(spikes, ids2)
 
 		T1 = np.mean(np.diff(spike_times_1))
 		T2 = np.mean(np.diff(spike_times_2))
